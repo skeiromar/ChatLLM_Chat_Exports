@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat Archive</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <!-- Markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@15.0.0/marked.min.js"></script>
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/styles/github.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/lib/core.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/lib/languages/javascript.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/lib/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/lib/languages/typescript.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/lib/languages/bash.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/lib/languages/json.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/lib/languages/css.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/lib/languages/xml.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/lib/languages/java.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/lib/languages/sql.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/lib/languages/markdown.min.js"></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-top">
+          <div class="brand">
+            <div class="brand-dot" aria-hidden="true"></div>
+            <div>
+              <h1>Chat Archive</h1>
+              <p id="statsLabel">No data loaded</p>
+            </div>
+          </div>
+          <button id="sidebarToggle" class="icon-btn" title="Collapse sidebar">
+            <span aria-hidden="true">&#x2039;</span>
+          </button>
+        </div>
+
+        <div class="control-group">
+          <label for="searchInput">Search</label>
+          <input
+            id="searchInput"
+            type="search"
+            placeholder="Search titles and messages..."
+            autocomplete="off"
+          />
+        </div>
+
+        <div class="control-group">
+          <label>Filter</label>
+          <div id="projectFilters" class="chips"></div>
+        </div>
+
+        <div class="sidebar-lists">
+          <div class="list-header" id="projectsHeader">Projects</div>
+          <ul id="projectConversations" class="conversation-list"></ul>
+
+          <div class="list-header" id="chatsHeader">Chats</div>
+          <ul id="chatConversations" class="conversation-list"></ul>
+        </div>
+      </aside>
+
+      <main class="main-pane">
+        <header class="toolbar">
+          <div class="toolbar-left">
+            <button id="mobileSidebarBtn" class="icon-btn mobile-only" aria-label="Open menu">
+              <span>&#9776;</span>
+            </button>
+            <h2 id="conversationTitle">Load an export to begin</h2>
+          </div>
+          <div class="toolbar-actions">
+            <label class="file-btn">
+              <input id="fileInput" type="file" accept=".json,application/json" multiple />
+              <span>Import JSON</span>
+            </label>
+          </div>
+        </header>
+
+        <section id="dropZone" class="drop-zone">
+          <h3>Drop export files here</h3>
+          <p>
+            Drop <code>clean-archive.json</code> or any Abacus export JSON.
+            You can also drop multiple files to merge them.
+          </p>
+        </section>
+
+        <section id="metaBar" class="meta-bar hidden"></section>
+        <article id="conversationPane" class="conversation-pane"></article>
+      </main>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

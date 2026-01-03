@@ -1,0 +1,13 @@
+{
+  "name": "abacus-offline-fetcher",
+  "version": "1.0.0",
+  "description": "Fetch Abacus ChatLLM conversations offline using saved browser cookies",
+  "main": "index.js",
+  "scripts": {
+    "fetch": "node index.js",
+    "install-browser": "node -e \"require('puppeteer').executablePath().then ? require('puppeteer-core') : null\" || npx puppeteer browsers install chrome"
+  },
+  "dependencies": {
+    "puppeteer": "^22.0.0"
+  }
+}

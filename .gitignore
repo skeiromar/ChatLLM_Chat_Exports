@@ -1,0 +1,30 @@
+.DS_Store
+
+# Node / Python runtime
+node_modules/
+__pycache__/
+*.pyc
+
+# Sensitive session artifacts
+cookies.txt
+cookies.json
+localStorage_dump.json
+sessionStorage_dump.json
+*.har
+*.mhtml
+*.htm
+ChatLLM_HTML_Pages_and_Files/
+
+# Generated exports
+abacus-ids.json
+abacus-export-*.json
+abacus-export-*.jsonl
+abacus-export-bundle.json
+clean-archive.json
+clean-archive.jsonl
+
+# Local research / captures
+extracted_text.txt
+chatLLMExportConsoleCode.docx
+chatsSideBar.png
+projectsSideBar.png
