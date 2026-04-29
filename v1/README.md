@@ -9,7 +9,10 @@ This is the supported exporter flow for the public repository. It calls the Abac
 **Quick start**
 1. Ensure Node.js 18+ is installed.
 2. Put your cookies in `v1/cookies.txt`, `resources/cookies.txt`, `v1/cookies.json`, or `resources/cookies.json`.
-3. Run the exporter:
+3. If you do not already have `resources/localStorage_dump.json`, open browser DevTools, perform a few actions in ChatLLM, export the Network log as a HAR file, and read:
+   - `appId` from the ChatLLM page URL or request URL
+   - `deploymentId` from `listDeploymentConversations` or `getDeploymentConversation` requests
+4. Run the exporter:
 
 ```bash
 node v1/export_chatllm.js
@@ -50,7 +53,7 @@ node v1/export_chatllm_projects.js
 - The script auto-reads `resources/localStorage_dump.json` for:
 - `regularDeploymentItem` → `deploymentId`
 - `regularDeploymentAppId` → `appId`
-- If you want to override them, pass `--deployment-id` and `--app-id`.
+- If you do not have that file, pass `--deployment-id` and `--app-id` from your HAR or DevTools capture.
 
 **Common options**
 - `--deployment-id <id>` Set deployment ID explicitly.
@@ -81,7 +84,7 @@ node v1/export_chatllm_projects.js
 node v1/export_chatllm.js
 
 # Explicit deployment/app IDs and a custom output
-node v1/export_chatllm.js --deployment-id 12945dab46 --app-id 15ca873ee6 --out v1/out/abacus-chats.json
+node v1/export_chatllm.js --deployment-id <deploymentId> --app-id <appId> --out v1/out/abacus-chats.json
 
 # Faster retry on a flaky run
 node v1/export_chatllm.js --resume --workers 8 --delay-ms 100
