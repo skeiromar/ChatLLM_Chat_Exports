@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ChatLLM Export Viewer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg"></div>
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">A</div>
+        <div>
+          <div class="brand-title">ChatLLM Export Viewer</div>
+          <div class="brand-sub">Local preview of your Abacus conversations</div>
+        </div>
+      </div>
+      <div class="stats" id="stats">Loading…</div>
+    </header>
+
+    <main class="layout">
+      <section class="sidebar">
+        <div class="sidebar-header">
+          <input id="search" type="search" placeholder="Search titles or content" />
+          <div class="meta" id="meta"></div>
+          <div class="load-controls" id="loadControls">
+            <button id="loadJson" class="ghost">Load JSON</button>
+            <input id="fileInput" type="file" accept=".json,application/json" />
+          </div>
+        </div>
+        <div class="list" id="list"></div>
+      </section>
+
+      <section class="content">
+        <div class="content-header">
+          <div>
+            <div class="title" id="title">Select a conversation</div>
+            <div class="subtitle" id="subtitle"></div>
+          </div>
+          <button id="toggleRaw" class="ghost">Toggle Raw</button>
+        </div>
+        <div id="messages" class="messages"></div>
+      </section>
+    </main>
+
+    <template id="message-template">
+      <article class="message">
+        <div class="message-meta">
+          <span class="role"></span>
+          <span class="timestamp"></span>
+          <span class="model"></span>
+        </div>
+        <div class="message-body"></div>
+      </article>
+    </template>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/highlight.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

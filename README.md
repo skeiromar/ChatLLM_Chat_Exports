@@ -1,134 +1,78 @@
 # Abacus ChatLLM Exporter
 
-Export your Abacus ChatLLM conversations from a logged-in browser session, clean the data, and review it locally in an offline viewer.
+This repository publishes the flow that actually worked in practice: a lightweight REST exporter plus a local viewer.
 
-This repository intentionally ships only code and documentation. It does **not** include cookies, session dumps, HAR files, screenshots, or conversation exports.
+The supported path is `v1/`. It calls Abacus ChatLLM REST endpoints directly using your local browser cookies and, optionally, a local storage dump for `deploymentId` and `appId`.
 
-## What this repo includes
+HAR files are not required to use this repo. They were useful during reverse engineering, but the exporter itself does not replay HAR traffic.
 
-- `abacus-console-exporter.js`
-  Browser-console exporter that walks the sidebar, opens each conversation, and saves JSON.
-- `abacus-id-collector.js`
-  Browser-console helper that collects conversation IDs and titles for the offline fetcher flow.
-- `abacus-offline-fetcher/`
-  Puppeteer-based fetcher that replays an authenticated browser session using your local cookies.
-- `merge-abacus-exports.js`
-  Combines multiple export files into a single bundle.
-- `clean_export.py`
-  Normalizes raw exports into cleaner archive formats for search, review, and downstream processing.
-- `viewer/`
-  Static local viewer for browsing exported conversations offline.
+## Repository layout
+
+- `v1/`
+  Supported exporter and viewer.
+- `resources/`
+  Local-only inputs such as `cookies.txt`, `cookies.json`, and `localStorage_dump.json`. This directory is ignored by git.
+- `legacy/console-offline/`
+  Earlier experimental scripts kept for reference only. They are not the recommended path.
 - `docs/images/`
-  Reserved for redacted screenshots if you want to add GitHub visuals later.
+  Place for a redacted screenshot if you want one on the GitHub page later.
 
-## Requirements
+## Supported flow
 
-- Node.js 18+
-- Python 3.10+
-- A logged-in Abacus ChatLLM browser session
-
-## Quick start
-
-### 1. Export from the browser
-
-Open Abacus ChatLLM in your browser, open DevTools, paste `abacus-console-exporter.js` into the console, and run it.
-
-Set the top-level config first:
-
-- `MODE = "chats"` for regular chats
-- `MODE = "projects"` for project conversations
-- `MAX_CHATS = Infinity` to export everything, or a smaller number while testing
-
-The script downloads:
-
-- `abacus-export-chats.json`
-- `abacus-export-projects.json`
-
-### 2. Optional: collect IDs for the offline fetcher path
-
-If you want a second workflow that renders each conversation in headless Chromium, run `abacus-id-collector.js` in the browser console first. That produces `abacus-ids.json`.
-
-Install the fetcher dependency:
+1. Put local session inputs in `resources/`.
+   Expected files:
+   - `resources/cookies.txt` or `resources/cookies.json`
+   - optional `resources/localStorage_dump.json`
+2. Run the regular chat exporter:
 
 ```bash
-cd abacus-offline-fetcher
-npm install
+node v1/export_chatllm.js --limit 4
 ```
 
-Then run:
+3. Run the project chat exporter if needed:
 
 ```bash
-node index.js --ids ../abacus-ids.json --cookies ../cookies.txt
+node v1/export_chatllm_projects.js --limit 4
 ```
 
-You can use either `cookies.txt` or `cookies.json`, but keep them local and uncommitted.
-
-### 3. Merge exports
-
-From the repository root:
+4. Start the viewer:
 
 ```bash
-node merge-abacus-exports.js
+python3 -m http.server 8788 --directory v1
 ```
 
-This writes:
+5. Open `http://localhost:8788/viewer/`
 
-- `abacus-export-bundle.json`
+The viewer auto-loads:
 
-You can also pass explicit files:
+- `v1/out/abacus-chats.json`
+- `v1/out/abacus-project-chats.json`
 
-```bash
-node merge-abacus-exports.js /path/to/abacus-export-chats.json /path/to/abacus-export-projects.json --out abacus-export-bundle.json
-```
+## Notes on IDs and HAR files
 
-### 4. Clean the raw export
+If `resources/localStorage_dump.json` is present, the exporters auto-read:
 
-```bash
-python3 clean_export.py abacus-export-bundle.json
-```
+- `regularDeploymentItem` as `deploymentId`
+- `regularDeploymentAppId` as `appId`
 
-Outputs:
+If you do not have that file, pass `--deployment-id` and `--app-id` directly.
 
-- `clean-archive.json`
-- `clean-archive.jsonl`
+You can inspect a browser HAR or DevTools network panel to discover those values, but that is optional and not the primary workflow.
 
-### 5. Review locally in the viewer
+## Publish safely
 
-Serve the repository from the root:
+Do not commit:
 
-```bash
-python3 -m http.server 8080
-```
+- cookies
+- local/session storage dumps
+- HAR files
+- exported chats
+- screenshots with visible chat titles, project names, user details, or account metadata
 
-Then open:
+The repo ignores the common sensitive files, but review `git status` before pushing.
 
-- `http://localhost:8080/viewer/`
+## Version notes
 
-The viewer will try to auto-load common export filenames from the repository root, or you can drag and drop JSON files into it.
+`v1/` is the maintained version.
 
-## Recommended workflow
-
-1. Use the console exporter to get the broadest raw capture.
-2. Use the offline fetcher if you need a second pass or DOM-rendered extraction.
-3. Merge the resulting files.
-4. Run `clean_export.py`.
-5. Inspect the result in `viewer/`.
-
-## Security and publication checklist
-
-Before pushing anything to GitHub:
-
-- Do not commit `cookies.txt`, `cookies.json`, local/session storage dumps, or HAR files.
-- Do not commit raw chat exports that contain your private conversations.
-- Do not publish screenshots unless you have redacted chat titles, project names, account names, and other personal context.
-- Rotate any real API key you may have used in earlier experiments.
-
-The included `.gitignore` blocks the most common sensitive artifacts, but you should still review `git status` before every commit.
-
-## Adding a screenshot later
-
-If you want a screenshot on the GitHub page, place a redacted image under `docs/images/`, for example:
-
-- `docs/images/viewer-redacted.png`
-
-Then reference it from this README with standard Markdown.
+The files under `legacy/console-offline/` reflect earlier experiments around console scraping and offline post-processing. They remain in the repo only as reference material and should not be treated as the canonical flow.

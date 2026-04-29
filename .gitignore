@@ -10,6 +10,12 @@ cookies.txt
 cookies.json
 localStorage_dump.json
 sessionStorage_dump.json
+resources/cookies.txt
+resources/cookies.json
+resources/localStorage_dump.json
+resources/sessionStorage_dump.json
+v1/cookies.txt
+v1/cookies.json
 *.har
 *.mhtml
 *.htm
@@ -22,6 +28,7 @@ abacus-export-*.jsonl
 abacus-export-bundle.json
 clean-archive.json
 clean-archive.jsonl
+v1/out/*.json
 
 # Local research / captures
 extracted_text.txt
