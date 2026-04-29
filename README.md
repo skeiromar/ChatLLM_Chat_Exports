@@ -1,30 +1,18 @@
 # Abacus ChatLLM Exporter
 
-This repository publishes the flow that actually worked in practice: a lightweight REST exporter plus a local viewer.
+Export your Abacus ChatLLM chats and project chats to local JSON, then browse them offline in the included viewer.
 
-The supported path is `v1/`. It calls Abacus ChatLLM REST endpoints directly using your local browser cookies and, optionally, a local storage dump for `deploymentId` and `appId`.
-
-HAR files are not required to use this repo. They were useful during reverse engineering, but the exporter itself does not replay HAR traffic.
+The supported workflow is `v1/`. It uses the Abacus ChatLLM REST endpoints directly with your logged-in browser session data.
 
 ![Abacus ChatLLM Chats Exporter](docs/images/clipboard_20260429-124934.png)
-
-## Repository layout
-
-- `v1/`
-  Supported exporter and viewer.
-- `resources/`
-  Local-only inputs such as `cookies.txt`, `cookies.json`, and `localStorage_dump.json`. This directory is ignored by git.
-- `legacy/console-offline/`
-  Earlier experimental scripts kept for reference only. They are not the recommended path.
 
 ## Supported flow
 
 1. Sign in to Abacus ChatLLM in your browser.
-2. Collect local session inputs in `resources/`.
-   Expected files:
+2. Collect the local session inputs used by the exporter:
    - `resources/cookies.txt` or `resources/cookies.json`
    - optional `resources/localStorage_dump.json`
-3. If you do not have `localStorage_dump.json`, open DevTools, perform a few actions in ChatLLM, export the Network log as a HAR file, and use it to find the IDs you need:
+3. If you do not have `resources/localStorage_dump.json`, open DevTools, perform a few actions in ChatLLM, export the Network log as a HAR file, and use it to find the IDs you need:
    - `appId`
      Look for a ChatLLM page URL such as `https://apps.abacus.ai/chatllm/?appId=...`
    - `deploymentId`
@@ -54,7 +42,7 @@ The viewer auto-loads:
 - `v1/out/abacus-chats.json`
 - `v1/out/abacus-project-chats.json`
 
-## Notes on IDs and HAR files
+## Notes
 
 If `resources/localStorage_dump.json` is present, the exporters auto-read:
 
@@ -62,18 +50,6 @@ If `resources/localStorage_dump.json` is present, the exporters auto-read:
 - `regularDeploymentAppId` as `appId`
 
 If you do not have that file, pass `--deployment-id` and `--app-id` directly from your HAR or DevTools network capture.
-
-## Publish safely
-
-Do not commit:
-
-- cookies
-- local/session storage dumps
-- HAR files
-- exported chats
-- screenshots with visible chat titles, project names, user details, or account metadata
-
-The repo ignores the common sensitive files, but review `git status` before pushing.
 
 ## Version notes
 
